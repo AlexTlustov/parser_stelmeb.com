@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.service import Service
 
 def get_list_category_urls():
     list_category_urls = []
-    for i in range(1, 150):
+    for i in range(1, 110):
         url = f'http://stelmeb.com/produktsiya/category/view/{i}'
         response = requests.get(url)
         if response.url != 'http://stelmeb.com/error-404' and response.url != 'https://paksmet.ru/produktsiya':
@@ -40,6 +40,7 @@ def get_all_link_product(list_urls):
                 print(full_link_product)
         else:
             continue
+    print(f'Всего страниц товаров {len(list_all_links_product)}')
     return list_all_links_product
 
 # Открываем JSON со всеми категориями и сохраням все ссылки на товары в другой JSON
@@ -51,7 +52,11 @@ with open('list_all_urls_product_stelmeb.json', 'w', encoding='utf-8') as f:
 
 def get_all_info_product(list_all_urls_product):
     data_products = []
+    quantity_url = len(list_all_urls_product)
+    count = quantity_url
+    print(f'Всего {count} товаров.')
     for url in list_all_urls_product:
+        print(f'Сейчас работаю со стринцей: {url}')
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
         service = Service()
@@ -79,8 +84,14 @@ def get_all_info_product(list_all_urls_product):
                         name_size = price_and_size.find('b', class_='product-subtitle').text
                     else:
                         name_size = ''
-                    size = price_and_size.find('p', class_='product-size').text
-                    price = price_and_size.find('p', class_='product-price').text
+                    if price_and_size.find('p', class_='product-size'):
+                        size = price_and_size.find('p', class_='product-size').text
+                    else:
+                        size = ''
+                    if price_and_size.find('p', class_='product-price'):
+                        price = price_and_size.find('p', class_='product-price').text
+                    else:
+                        price = ''
                     list_price_and_size.append({
                         'НазваниеРазмера': name_size,
                         'Размер': size,
@@ -93,13 +104,18 @@ def get_all_info_product(list_all_urls_product):
                     'Картинки': list_links_images,
                     'РазмерЦена': list_price_and_size
                 })
+        count -= 1
+        print(f'Осталось {count} товаров.')
     return data_products
 
 # Открываем JSON со всеми ссылками на товары и записываем данные о товарах в другой JSON
-# with open('list_all_urls_product_stelmeb.json') as json_file:
-#     list_all_urls_product_stelmeb = json.load(json_file)
-# final_data_list = get_all_info_product(list_all_urls_product_stelmeb)
-# with open('data_products.json', 'w', encoding='utf-8') as f:
-#     json.dump(final_data_list, f, ensure_ascii=False)
+with open('list_all_urls_product_stelmeb.json') as json_file:
+    list_all_urls_product_stelmeb = json.load(json_file)
+final_data_list = get_all_info_product(list_all_urls_product_stelmeb)
+with open('data_products.json', 'w', encoding='utf-8') as f:
+    json.dump(final_data_list, f, ensure_ascii=False)
+
+
+
 
 
