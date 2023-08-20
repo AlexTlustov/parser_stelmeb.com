@@ -19,9 +19,9 @@ def get_list_category_urls():
     return list(list_category_urls)
 
 # Считваем все ссылки на категории и добовляем их в JSON файл
-# list_category_urls = get_list_category_urls()
-# with open('list_category_urls_stelmeb.json', 'w', encoding='utf-8') as f:
-#     json.dump(list_category_urls, f, ensure_ascii=False)
+list_category_urls = get_list_category_urls()
+with open('list_category_urls_stelmeb.json', 'w', encoding='utf-8') as f:
+    json.dump(list_category_urls, f, ensure_ascii=False)
 
 def get_all_link_product(list_urls):    
     list_all_links_product = []
@@ -47,11 +47,11 @@ def get_all_link_product(list_urls):
     return list_all_links_product
 
 # Открываем JSON со всеми категориями и сохраням все ссылки на товары в другой JSON
-# with open('list_category_urls_stelmeb.json') as json_file:
-#     list_category_urls_stelmeb = json.load(json_file)
-# list_all_urls_product = get_all_link_product(list_category_urls_stelmeb)
-# with open('list_all_urls_product_stelmeb.json', 'w', encoding='utf-8') as f:
-#     json.dump(list_all_urls_product, f, ensure_ascii=False)
+with open('list_category_urls_stelmeb.json') as json_file:
+    list_category_urls_stelmeb = json.load(json_file)
+list_all_urls_product = get_all_link_product(list_category_urls_stelmeb)
+with open('list_all_urls_product_stelmeb.json', 'w', encoding='utf-8') as f:
+    json.dump(list_all_urls_product, f, ensure_ascii=False)
 
 def open_product_page(url, wait_time):
     options = webdriver.ChromeOptions()
